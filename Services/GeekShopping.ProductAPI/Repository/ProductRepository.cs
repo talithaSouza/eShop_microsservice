@@ -63,6 +63,8 @@ namespace GeekShopping.ProductAPI.Repository
 
                 _context.Products.Remove(product);
 
+                await _context.SaveChangesAsync();
+
                 return true;
 
             }
