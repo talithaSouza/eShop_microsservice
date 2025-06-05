@@ -34,5 +34,35 @@ namespace GeekShopping.ProductAPI.Controllers
 
             return Ok(product);
         }
+
+        [HttpPost()]
+        public async Task<IActionResult> Post(ProductDTO productDTO)
+        {
+            if (productDTO == null)
+                return BadRequest();
+
+            return Ok(await _repository.Create(productDTO));
+        }
+
+        [HttpPut()]
+        public async Task<IActionResult> Put(ProductDTO productDTO)
+        {
+            if (productDTO == null)
+                return BadRequest();
+
+            return Ok(await _repository.Update(productDTO));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(long id)
+        {
+            bool deleted = await _repository.Remove(id);
+
+            if (deleted)
+                return Ok(deleted);
+
+
+            return NotFound();
+        }
     }
 }
