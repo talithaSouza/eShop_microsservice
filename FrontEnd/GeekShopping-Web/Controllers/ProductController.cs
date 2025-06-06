@@ -19,6 +19,24 @@ public class ProductController : Controller
         var products = await _productService.GetAllProducts();
         return View(products);
     }
-   
 
+    public async Task<IActionResult> ProductCreate()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ProductCreate(ProductModel productModel)
+    {
+        if (ModelState.IsValid)
+        {
+            var response = await _productService.CreateProduct(productModel);
+
+            if (response != null)
+                return RedirectToAction(nameof(ProductIndex));
+
+        }
+
+        return View(productModel);
+    }
 }
