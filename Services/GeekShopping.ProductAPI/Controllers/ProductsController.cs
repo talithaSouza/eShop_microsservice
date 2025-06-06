@@ -36,7 +36,7 @@ namespace GeekShopping.ProductAPI.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> Post(ProductDTO productDTO)
+        public async Task<IActionResult> Post([FromBody] ProductDTO productDTO)
         {
             if (productDTO == null)
                 return BadRequest();
@@ -45,7 +45,7 @@ namespace GeekShopping.ProductAPI.Controllers
         }
 
         [HttpPut()]
-        public async Task<IActionResult> Put(ProductDTO productDTO)
+        public async Task<IActionResult> Put([FromBody] ProductDTO productDTO)
         {
             if (productDTO == null)
                 return BadRequest();
