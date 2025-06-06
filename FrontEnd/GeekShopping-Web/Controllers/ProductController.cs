@@ -39,4 +39,27 @@ public class ProductController : Controller
 
         return View(productModel);
     }
+    public async Task<IActionResult> ProductUpdate(int id)
+    {
+        var product = await _productService.GetProduct(id);
+        if (product == null)
+            return NotFound();
+
+        return View(product);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ProductUpdate(ProductModel productModel)
+    {
+        if (ModelState.IsValid)
+        {
+            var response = await _productService.UpdateProduct(productModel);
+
+            if (response != null)
+                return RedirectToAction(nameof(ProductIndex));
+
+        }
+
+        return View(productModel);
+    }
 }
