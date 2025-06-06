@@ -62,4 +62,24 @@ public class ProductController : Controller
 
         return View(productModel);
     }
+
+    public async Task<IActionResult> ProductDelete(int id)
+    {
+        var product = await _productService.GetProduct(id);
+        if (product == null)
+            return NotFound();
+
+        return View(product);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ProductDelete(ProductModel productModel)
+    {
+        var response = await _productService.RemoveProductById(productModel.Id);
+
+        if (response)
+            return RedirectToAction(nameof(ProductIndex));
+
+        return View(productModel);
+    }
 }
