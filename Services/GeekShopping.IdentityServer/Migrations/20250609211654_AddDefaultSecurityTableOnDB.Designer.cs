@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GeekShopping.IdentityServer.Migrations
 {
     [DbContext(typeof(MySqlContext))]
-    [Migration("20250609204139_AddDefaultSecurityTableOnDB")]
+    [Migration("20250609211654_AddDefaultSecurityTableOnDB")]
     partial class AddDefaultSecurityTableOnDB
     {
         /// <inheritdoc />
@@ -43,6 +43,14 @@ namespace GeekShopping.IdentityServer.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
