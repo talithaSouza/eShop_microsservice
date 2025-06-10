@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using GeekShopping_Web.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GeekShopping_Web.Controllers;
 
@@ -28,4 +29,16 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
+    [Authorize]
+    public async Task<IActionResult> Login()
+    {
+        return RedirectToAction(nameof(Index));
+    }
+
+    public IActionResult Logout()
+    {
+        return SignOut("Cookies", "oidc");
+    }
+
 }

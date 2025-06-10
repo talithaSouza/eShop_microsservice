@@ -15,7 +15,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = "oidc";
 })
 .AddCookie("Cookies", c => c.ExpireTimeSpan = TimeSpan.FromMinutes(10))
-.AddOpenIdConnect("iodc", options =>
+.AddOpenIdConnect("oidc", options =>
 {
     options.Authority = builder.Configuration["ServicesUrls:IdentityServer"];
     options.GetClaimsFromUserInfoEndpoint = true;
