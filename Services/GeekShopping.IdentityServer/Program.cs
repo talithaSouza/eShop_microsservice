@@ -1,6 +1,7 @@
 using GeekShopping.IdentityServer.Configuration;
 using GeekShopping.IdentityServer.Entities;
 using GeekShopping.IdentityServer.Entities.Context;
+using GeekShopping.IdentityServer.Initializer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,6 +39,7 @@ var builderIdentityServer = builder.Services.AddIdentityServer(options =>
 
 builderIdentityServer.AddDeveloperSigningCredential();
 
+builder.Services.AddScoped<IDBInitializer, DBInitializer>();
 
 var app = builder.Build();
 
@@ -61,6 +63,12 @@ app.UseRouting();
 app.UseIdentityServer();
 
 app.UseAuthorization();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDBInitializer>();
+    dbInitializer.Initializer();
+}
 
 app.MapControllerRoute(
     name: "default",
