@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using GeekShopping_Web.Models;
 using GeekShopping_Web.Services.IServices;
 
@@ -13,9 +14,14 @@ namespace GeekShopping_Web.Services
             _client = client;
         }
 
-
-        public async Task<IEnumerable<ProductModel>> GetAllProducts()
+        private void SetToken(string token)
         {
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
+        public async Task<IEnumerable<ProductModel>> GetAllProducts(string token)
+        {
+            SetToken(token);
+
             var response = await _client.GetAsync(BasePath);
 
             response.EnsureSuccessStatusCode();
@@ -23,8 +29,10 @@ namespace GeekShopping_Web.Services
             return await response.Content.ReadFromJsonAsync<IEnumerable<ProductModel>>();
         }
 
-        public async Task<ProductModel> GetProduct(long id)
+        public async Task<ProductModel> GetProduct(long id, string token)
         {
+            SetToken(token);
+
             var response = await _client.GetAsync($"{BasePath}/{id}");
 
             response.EnsureSuccessStatusCode();
@@ -32,8 +40,10 @@ namespace GeekShopping_Web.Services
             return await response.Content.ReadFromJsonAsync<ProductModel>();
         }
 
-        public async Task<ProductModel> CreateProduct(ProductModel productModel)
+        public async Task<ProductModel> CreateProduct(ProductModel productModel, string token)
         {
+            SetToken(token);
+
             var jsonContent = JsonContent.Create(productModel);
 
             var response = await _client.PostAsync(BasePath, jsonContent);
@@ -44,9 +54,11 @@ namespace GeekShopping_Web.Services
             return await response.Content.ReadFromJsonAsync<ProductModel>();
         }
 
-        public async Task<ProductModel> UpdateProduct(ProductModel productModel)
+        public async Task<ProductModel> UpdateProduct(ProductModel productModel, string token)
         {
-             var jsonContent = JsonContent.Create(productModel);
+            SetToken(token);
+
+            var jsonContent = JsonContent.Create(productModel);
 
             var response = await _client.PutAsync(BasePath, jsonContent);
 
@@ -56,9 +68,11 @@ namespace GeekShopping_Web.Services
             return await response.Content.ReadFromJsonAsync<ProductModel>();
         }
 
-        public async Task<bool> RemoveProductById(long id)
+        public async Task<bool> RemoveProductById(long id, string token)
         {
-             var response = await _client.DeleteAsync($"{BasePath}/{id}");
+            SetToken(token);
+
+            var response = await _client.DeleteAsync($"{BasePath}/{id}");
 
             response.EnsureSuccessStatusCode();
 
