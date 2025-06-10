@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Authentication;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.RegisterServices(builder.Configuration);
+
 builder.Services.AddControllersWithViews();
 
-builder.Services.RegisterServices(builder.Configuration);
 
 #region Configuração de autenticação
 builder.Services.AddAuthentication(options =>
