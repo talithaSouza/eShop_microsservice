@@ -1,6 +1,8 @@
 using GeekShopping.ProductAPI.DTO;
 using GeekShopping.ProductAPI.Model;
 using GeekShopping.ProductAPI.Repository.Interfaces;
+using GeekShopping.ProductAPI.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeekShopping.ProductAPI.Controllers
@@ -17,12 +19,14 @@ namespace GeekShopping.ProductAPI.Controllers
             _repository = repository;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _repository.GetAll());
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(long id)
         {
@@ -35,6 +39,7 @@ namespace GeekShopping.ProductAPI.Controllers
             return Ok(product);
         }
 
+        [Authorize]
         [HttpPost()]
         public async Task<IActionResult> Post([FromBody] ProductDTO productDTO)
         {
@@ -44,6 +49,7 @@ namespace GeekShopping.ProductAPI.Controllers
             return Ok(await _repository.Create(productDTO));
         }
 
+        [Authorize]
         [HttpPut()]
         public async Task<IActionResult> Put([FromBody] ProductDTO productDTO)
         {
@@ -53,6 +59,7 @@ namespace GeekShopping.ProductAPI.Controllers
             return Ok(await _repository.Update(productDTO));
         }
 
+        [Authorize(Roles = Role.Admin)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {

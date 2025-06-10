@@ -1,6 +1,7 @@
 using GeekShopping.ProductAPI.Config;
 using GeekShopping.ProductAPI.Model.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,28 @@ builder.Services.RegisterRepository();
 
 builder.Services.AddControllers();
 
+#region Configuração de autenticação
+builder.Services
+.AddAuthentication("Bearer")
+.AddJwtBearer(options =>
+{
+    options.Authority = "https://localhost:4435/";
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateAudience = false
+    };
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ApiScope", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("scope", "geek_shopping");
+    });
+});
+#endregion
+
 var app = builder.Build();
 
 //-------------------------------------
@@ -32,11 +55,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+
+app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
