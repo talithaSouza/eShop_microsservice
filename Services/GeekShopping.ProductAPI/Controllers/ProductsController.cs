@@ -19,7 +19,6 @@ namespace GeekShopping.ProductAPI.Controllers
             _repository = repository;
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

@@ -16,12 +16,9 @@ public class ProductController : Controller
         _productService = productService;
     }
 
-    [Authorize]
     public async Task<IActionResult> ProductIndex()
-    {
-        var token = await HttpContext.GetTokenAsync("access_token");
-        
-        var products = await _productService.GetAllProducts(token);
+    {   
+        var products = await _productService.GetAllProducts("");
         return View(products);
     }
 
