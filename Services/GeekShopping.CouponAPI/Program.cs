@@ -1,6 +1,5 @@
-using GeekShopping.CartAPI.Config;
-using GeekShopping.CartAPIAPI.Model.Context;
-using GeekShopping.ProductAPI.Config;
+using GeekShopping.CouponAPI.Config;
+using GeekShopping.CouponAPI.Model.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -13,7 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 #region Configuração swagger
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.CartAPI", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.CouponAPI", Version = "v1" });
     c.EnableAnnotations();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -89,8 +88,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
-
-app.UseAuthorization();
+app.MapControllers();
 
 app.Run();
