@@ -1,0 +1,41 @@
+// .vscode/tasks.json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "run FrontEnd",
+      "command": "dotnet run --project ./FrontEnd/GeekShopping-Web/GeekShopping-Web.csproj",
+      "type": "shell",
+      "problemMatcher": []
+    },
+    {
+      "label": "run IdentityServer",
+      "command": "dotnet run --project ./Services/GeekShopping.IdentityServer/GeekShopping.IdentityServer.csproj",
+      "type": "shell",
+      "problemMatcher": []
+    },
+    {
+      "label": "run ProductAPI",
+      "command": "dotnet run --project ./Services/GeekShopping.ProductAPI/GeekShopping.ProductAPI.csproj",
+      "type": "shell",
+      "problemMatcher": []
+    },
+    {
+      "label": "run CartAPI",
+      "command": "dotnet run --project ./Services/GeekShopping.CartAPI/GeekShopping.CartAPI.csproj",
+      "type": "shell",
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Mult Projs", // <- Esse nome que aparecerá no menu Terminal
+      "dependsOn": [
+        "run FrontEnd",
+        "run IdentityServer",
+        "run ProductAPI"
+      ],
+      "dependsOrder": "parallel",
+      "type": "shell",
+      "problemMatcher": []
+    }
+  ]
+}
