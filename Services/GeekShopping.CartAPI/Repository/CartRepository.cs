@@ -20,7 +20,31 @@ namespace GeekShopping.CartAPI.Repository
 
         public async Task<bool> ApplyCoupon(string userId, string couponCode)
         {
-            throw new NotImplementedException();
+            var header = await _context.CartHeaders
+                        .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (header != null)
+            {
+                header.CouponCode = couponCode;
+                _context.CartHeaders.Update(header);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> RemoveCoupon(string userId)
+        {
+            var header = await _context.CartHeaders
+                        .FirstOrDefaultAsync(c => c.UserId == userId);
+            if (header != null)
+            {
+                header.CouponCode = "";
+                _context.CartHeaders.Update(header);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
 
         public async Task<bool> ClearCart(string userId)
@@ -36,7 +60,7 @@ namespace GeekShopping.CartAPI.Repository
                 _context.CartHeaders.Remove(cartHeader);
 
                 await _context.SaveChangesAsync();
-                
+
                 return true;
             }
 
@@ -51,17 +75,17 @@ namespace GeekShopping.CartAPI.Repository
                             .FirstOrDefaultAsync(c => c.UserId == userId),
             };
 
-            cart.CartDetails = _context.CartDetails
+            if (cart.CartHeader == null)
+                return null;
+
+            cart.CartDetails = await _context.CartDetails
                                .Where(c => c.CartHeaderId == cart.CartHeader.Id)
-                               .Include(c => c.Product);
+                               .Include(c => c.Product)
+                               .ToListAsync();
 
             return _mapper.Map<CartDTO>(cart);
         }
 
-        public async Task<bool> RemoveCoupon(string userId)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<bool> RemoveFromCart(long cartDetailsId)
         {
