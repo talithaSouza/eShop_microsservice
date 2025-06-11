@@ -20,9 +20,17 @@ public class HomeController : Controller
 
     public async Task<IActionResult> IndexAsync()
     {
+        var products = await _productService.GetAllProducts("");
+
+        return View(products);
+    }
+   
+   [Authorize]
+    public async Task<IActionResult> Details(int id)
+    {
         var token = await HttpContext.GetTokenAsync("access_token");
 
-        var products = await _productService.GetAllProducts(token);
+        var products = await _productService.GetProduct(id, token);
 
         return View(products);
     }
