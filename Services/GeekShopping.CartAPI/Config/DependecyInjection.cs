@@ -1,12 +1,15 @@
 
+using GeekShopping.CartAPI.Repository;
+using GeekShopping.CartAPI.Repository.Interfaces;
+
 namespace GeekShopping.ProductAPI.Config
 {
     public static class DependencyInjection
     {
         public static IServiceCollection RegisterRepository(this IServiceCollection services)
         {
-            #region P
-            // services.AddScoped<IProductRepository, ProductRepository>();
+            #region C
+            services.AddScoped<ICartRepository, CartRepository>();
             #endregion
 
             return services;
