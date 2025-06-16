@@ -19,7 +19,7 @@ namespace GeekShopping.CartAPI.Controllers
         }
 
 
-       [HttpGet("find-cart/{id}")]
+       [HttpGet("find-cart/{userId}")]
         public async Task<ActionResult> FindById(string userId)
         {
             var cart = await _repository.FindCartByUserId(userId);
@@ -30,7 +30,7 @@ namespace GeekShopping.CartAPI.Controllers
             return Ok(cart);
         }
 
-        [HttpPost("add-cart/{id}")]
+        [HttpPost("add-cart")]
         public async Task<ActionResult> AddCart(CartDTO DTO)
         {
             var cart = await _repository.SaveOrUpdateCart(DTO);
@@ -40,7 +40,7 @@ namespace GeekShopping.CartAPI.Controllers
             return Ok(cart);
         }
 
-        [HttpPut("update-cart/{id}")]
+        [HttpPut("update-cart")]
         public async Task<ActionResult> UpdateCart(CartDTO DTO)
         {
             var cart = await _repository.SaveOrUpdateCart(DTO);
