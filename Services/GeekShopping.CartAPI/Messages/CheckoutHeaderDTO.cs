@@ -1,8 +1,9 @@
 using GeekShopping.CartAPI.DTO;
+using GeekShopping.MessageBus;
 
 namespace GeekShopping.CartAPI.Messages
 {
-    public class CheckoutHeader
+    public class CheckoutHeaderDTO: BaseMessage
     {
         public long Id { get; set; }
         public string UserId { get; set; }
