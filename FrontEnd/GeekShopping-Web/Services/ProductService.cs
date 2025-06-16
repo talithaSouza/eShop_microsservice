@@ -18,7 +18,7 @@ namespace GeekShopping_Web.Services
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
-        public async Task<IEnumerable<ProductModel>> GetAllProducts(string token)
+        public async Task<IEnumerable<ProductViewModel>> GetAllProducts(string token)
         {
             SetToken(token);
 
@@ -26,10 +26,10 @@ namespace GeekShopping_Web.Services
 
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<IEnumerable<ProductModel>>();
+            return await response.Content.ReadFromJsonAsync<IEnumerable<ProductViewModel>>();
         }
 
-        public async Task<ProductModel> GetProduct(long id, string token)
+        public async Task<ProductViewModel> GetProduct(long id, string token)
         {
             SetToken(token);
 
@@ -37,10 +37,10 @@ namespace GeekShopping_Web.Services
 
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<ProductModel>();
+            return await response.Content.ReadFromJsonAsync<ProductViewModel>();
         }
 
-        public async Task<ProductModel> CreateProduct(ProductModel productModel, string token)
+        public async Task<ProductViewModel> CreateProduct(ProductViewModel productModel, string token)
         {
             SetToken(token);
 
@@ -51,10 +51,10 @@ namespace GeekShopping_Web.Services
             if (!response.IsSuccessStatusCode)
                 throw new Exception("Falha ao desserializar a resposta no Post.");
 
-            return await response.Content.ReadFromJsonAsync<ProductModel>();
+            return await response.Content.ReadFromJsonAsync<ProductViewModel>();
         }
 
-        public async Task<ProductModel> UpdateProduct(ProductModel productModel, string token)
+        public async Task<ProductViewModel> UpdateProduct(ProductViewModel productModel, string token)
         {
             SetToken(token);
 
@@ -65,7 +65,7 @@ namespace GeekShopping_Web.Services
             if (!response.IsSuccessStatusCode)
                 throw new Exception("Falha ao desserializar a resposta no Post.");
 
-            return await response.Content.ReadFromJsonAsync<ProductModel>();
+            return await response.Content.ReadFromJsonAsync<ProductViewModel>();
         }
 
         public async Task<bool> RemoveProductById(long id, string token)
