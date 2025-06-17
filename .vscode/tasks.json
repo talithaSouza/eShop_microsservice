@@ -31,7 +31,8 @@
       "dependsOn": [
         "run FrontEnd",
         "run IdentityServer",
-        "run ProductAPI"
+        "run ProductAPI",
+        "run CartAPI"
       ],
       "dependsOrder": "parallel",
       "type": "shell",
