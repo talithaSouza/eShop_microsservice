@@ -1,5 +1,6 @@
 using GeekShopping.CartAPI.Config;
 using GeekShopping.CartAPIAPI.Model.Context;
+using GeekShopping.ProductAPI.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -51,7 +52,7 @@ builder.Services.AddDbContext<MySqlContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 builder.Services.RegisterMaps();
-//builder.Services.RegisterRepository();
+builder.Services.RegisterRepository();
 
 builder.Services.AddControllers();
 
@@ -91,5 +92,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
