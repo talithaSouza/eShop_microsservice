@@ -48,7 +48,7 @@ namespace GeekShopping.CartAPI.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("cart_detail");
+                    b.ToTable("cart_detail", (string)null);
                 });
 
             modelBuilder.Entity("GeekShopping.CartAPI.Model.CartHeader", b =>
@@ -70,7 +70,7 @@ namespace GeekShopping.CartAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("cart_header");
+                    b.ToTable("cart_header", (string)null);
                 });
 
             modelBuilder.Entity("GeekShopping.CartAPI.Model.Product", b =>
@@ -106,7 +106,7 @@ namespace GeekShopping.CartAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("product");
+                    b.ToTable("product", (string)null);
                 });
 
             modelBuilder.Entity("GeekShopping.CartAPI.Model.CartDetail", b =>
