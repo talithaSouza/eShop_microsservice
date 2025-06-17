@@ -18,8 +18,9 @@ namespace GeekShopping_Web.Utils.Extensions
 
         public static Task<HttpResponseMessage> Post<T>(this HttpClient client, string url, T data)
         {
-            var dataAsString = JsonSerializer.Serialize(data);
-            var content = new StringContent(dataAsString, contentType);
+            var content = new StringContent(JsonSerializer.Serialize(data));
+
+            content.Headers.ContentType = contentType;
 
             return client.PostAsync(url, content);
         }
@@ -30,6 +31,21 @@ namespace GeekShopping_Web.Utils.Extensions
             var content = new StringContent(dataAsString, contentType);
 
             return client.PutAsync(url, content);
+        }
+
+        public static async Task<T> ReadContentAs<T>(this HttpResponseMessage response)
+        {
+            if (!response.IsSuccessStatusCode)
+                throw new ApplicationException($"Something went wrong calling the API: {response.ReasonPhrase}");
+
+
+            var dataAsString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            return JsonSerializer.Deserialize<T>(dataAsString,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
         }
     }
 }

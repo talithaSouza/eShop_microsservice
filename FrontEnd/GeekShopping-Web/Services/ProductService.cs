@@ -20,8 +20,7 @@ namespace GeekShopping_Web.Services
         }
         public async Task<IEnumerable<ProductViewModel>> GetAllProducts(string token)
         {
-            SetToken(token);
-
+            
             var response = await _client.GetAsync(BasePath);
 
             response.EnsureSuccessStatusCode();

@@ -1,3 +1,4 @@
+using GeekShopping.Web.Services.IServices;
 using GeekShopping_Web.Services;
 using GeekShopping_Web.Services.IServices;
 
@@ -7,7 +8,14 @@ namespace GeekShopping_Web.Config
     {
         public static IServiceCollection RegisterServices(this IServiceCollection services, IConfiguration configuration)
         {
-            #region H
+           
+            #region C
+            services.AddHttpClient<ICartService, CartService>(c =>
+                c.BaseAddress = new Uri(configuration["ServicesUrls:CartAPI"])
+            );
+            #endregion
+
+            #region P
             services.AddHttpClient<IProductService, ProductService>(c =>
                 c.BaseAddress = new Uri(configuration["ServicesUrls:ProductsAPI"])
             );

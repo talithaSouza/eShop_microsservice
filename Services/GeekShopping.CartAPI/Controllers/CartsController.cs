@@ -30,10 +30,13 @@ namespace GeekShopping.CartAPI.Controllers
             return Ok(cart);
         }
 
+        [Authorize]
         [HttpPost("add-cart")]
-        public async Task<ActionResult> AddCart(CartDTO DTO)
+        public async Task<ActionResult> AddCart([FromBody] CartDTO DTO)
         {
             var cart = await _repository.SaveOrUpdateCart(DTO);
+
+            System.Console.WriteLine("Passou na Carts Controller Back");
 
             if (cart == null)
                 return NotFound();
