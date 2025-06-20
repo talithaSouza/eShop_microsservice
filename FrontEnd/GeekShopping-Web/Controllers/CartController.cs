@@ -11,11 +11,13 @@ namespace GeekShopping_Web.Controllers
     {
         private readonly IProductService _productService;
         private readonly ICartService _cartService;
+        private readonly ICouponService _couponService;
 
-        public CartController(IProductService productService, ICartService cartService)
+        public CartController(IProductService productService, ICartService cartService, ICouponService couponService)
         {
             _productService = productService;
             _cartService = cartService;
+            _couponService = couponService;
         }
 
         [Authorize]
@@ -23,7 +25,7 @@ namespace GeekShopping_Web.Controllers
         {
             return View(await FindUserCart());
         }
-        
+
         [HttpPost]
         [ActionName("ApplyCoupon")]
         public async Task<IActionResult> ApplyCoupon(CartViewModel model)
@@ -39,7 +41,13 @@ namespace GeekShopping_Web.Controllers
             }
             return View();
         }
-        
+
+        [HttpGet]
+        public async Task<IActionResult> Checkout()
+        {
+            return View(await FindUserCart());
+        }
+
         [HttpPost]
         [ActionName("RemoveCoupon")]
         public async Task<IActionResult> RemoveCoupon()
@@ -69,7 +77,7 @@ namespace GeekShopping_Web.Controllers
             }
             return View();
         }
-                
+
         private async Task<CartViewModel> FindUserCart()
         {
             var token = await HttpContext.GetTokenAsync("access_token");
@@ -79,10 +87,20 @@ namespace GeekShopping_Web.Controllers
 
             if (response?.CartHeader != null)
             {
+                if (!string.IsNullOrEmpty(response.CartHeader.CouponCode))
+                {
+                    var coupon = await _couponService.
+                        GetCoupon(response.CartHeader.CouponCode, token);
+                    if (coupon?.CouponCode != null)
+                    {
+                        response.CartHeader.DiscountAmount = coupon.DiscountAmount;
+                    }
+                }
                 foreach (var detail in response.CartDetails)
                 {
-                    response.CartHeader.DiscountAmount += (detail.Product.Price * detail.Count);
+                    response.CartHeader.PurchaseAmount += (detail.Product.Price * detail.Count);
                 }
+                response.CartHeader.PurchaseAmount -= response.CartHeader.DiscountAmount;
             }
             return response;
         }

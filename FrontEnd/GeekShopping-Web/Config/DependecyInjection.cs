@@ -13,6 +13,10 @@ namespace GeekShopping_Web.Config
             services.AddHttpClient<ICartService, CartService>(c =>
                 c.BaseAddress = new Uri(configuration["ServicesUrls:CartAPI"])
             );
+           
+            services.AddHttpClient<ICouponService, CouponService>(c =>
+                c.BaseAddress = new Uri(configuration["ServicesUrls:CouponAPI"])
+            );
             #endregion
 
             #region P
