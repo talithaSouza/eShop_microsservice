@@ -27,12 +27,19 @@
       "problemMatcher": []
     },
     {
+      "label": "run CouponAPI",
+      "command": "dotnet run --project ./Services/GeekShopping.CouponAPI/GeekShopping.CouponAPI.csproj",
+      "type": "shell",
+      "problemMatcher": []
+    },
+    {
       "label": "Start Mult Projs", // <- Esse nome que aparecerá no menu Terminal
       "dependsOn": [
         "run FrontEnd",
         "run IdentityServer",
         "run ProductAPI",
-        "run CartAPI"
+        "run CartAPI",
+        "run CouponAPI"
       ],
       "dependsOrder": "parallel",
       "type": "shell",
