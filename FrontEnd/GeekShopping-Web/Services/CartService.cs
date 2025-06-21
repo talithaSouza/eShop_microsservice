@@ -63,9 +63,12 @@ namespace GeekShopping_Web.Services
         public async Task<bool> ApplyCoupon(CartViewModel model, string token)
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             var response = await _client.Post($"{BasePath}/apply-coupon", model);
+
             if (response.IsSuccessStatusCode)
                 return await response.ReadContentAs<bool>();
+
             else throw new Exception("Something went wrong when calling API");
         }
 
@@ -79,9 +82,16 @@ namespace GeekShopping_Web.Services
         }
 
 
-        public async Task<CartViewModel> Checkout(CartHeaderViewModel cartHeader, string token)
+        public async Task<CartHeaderViewModel> Checkout(CartHeaderViewModel cartHeader, string token)
         {
-            throw new NotImplementedException();
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await _client.Post($"{BasePath}/checkout", cartHeader);
+
+            if (response.IsSuccessStatusCode)
+                return await response.ReadContentAs<CartHeaderViewModel>();
+
+            else throw new Exception("Something went wrong when calling API");
         }
 
         public async Task<bool> ClearCart(string userId, string token)
