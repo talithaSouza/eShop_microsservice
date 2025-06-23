@@ -1,3 +1,4 @@
+using GeekShopping.OrderAPI.Config;
 using GeekShopping.OrderAPI.Model.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -49,8 +50,10 @@ var connectionString = builder.Configuration.GetConnectionString("MySQLConnectio
 builder.Services.AddDbContext<MySqlContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// builder.Services.RegisterMaps();
-// builder.Services.RegisterRepository();
+var dbBuilder = new DbContextOptionsBuilder<MySqlContext>();
+dbBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+
+builder.Services.RegisterRepository(dbBuilder);
 
 builder.Services.AddControllers();
 
