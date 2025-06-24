@@ -50,10 +50,7 @@ var connectionString = builder.Configuration.GetConnectionString("MySQLConnectio
 builder.Services.AddDbContext<MySqlContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-var dbBuilder = new DbContextOptionsBuilder<MySqlContext>();
-dbBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-
-builder.Services.RegisterRepository(dbBuilder);
+builder.Services.RegisterRepository();
 
 builder.Services.AddControllers();
 

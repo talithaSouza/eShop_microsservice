@@ -6,9 +6,9 @@ namespace GeekShopping.OrderAPI.Repository.Interface
 {
     public class OrderRepository : IOrderRepository
     {
-        private DbContextOptions<MySqlContext> _context;
+        private readonly MySqlContext _context;
 
-        public OrderRepository(DbContextOptions<MySqlContext> context)
+        public OrderRepository(MySqlContext context)
         {
             _context = context;
         }
@@ -19,25 +19,21 @@ namespace GeekShopping.OrderAPI.Repository.Interface
             if (header == null)
                 return false;
 
-            await using var _db = new MySqlContext(_context);
+            _context.Headers.Add(header);
 
-            _db.Headers.Add(header);
-
-            await _db.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return true;
         }
 
         public async Task UpdateOrderPaymentStatus(long orderHeaderId, bool status)
         {
-            await using var _db = new MySqlContext(_context);
-
-            var header = await _db.Headers.FirstOrDefaultAsync(o => o.Id == orderHeaderId);
+            var header = await _context.Headers.FirstOrDefaultAsync(o => o.Id == orderHeaderId);
 
             if (header != null)
             {
                 header.PaymentStatus = status;
-                await _db.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
         }
 
