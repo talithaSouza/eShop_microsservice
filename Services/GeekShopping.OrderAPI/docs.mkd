@@ -1,0 +1,101 @@
+# Resumo Técnico da Classe `RabbitMQMessagesConsumer`
+
+---
+
+## Estrutura Geral
+
+- **Classe derivada de:**  
+  `BackgroundService` → Permite que o serviço rode em segundo plano no ASP.NET Core.
+
+- **Responsável por:**  
+  Consumir mensagens da fila RabbitMQ chamada `"checkoutqueue"` de forma assíncrona.
+
+---
+
+## Métodos e principais partes
+
+### 1. Construtor (`RabbitMQMessagesConsumer`)
+
+**Função:**  
+Criar a conexão com o RabbitMQ e o canal.
+
+**O que faz:**
+
+- Instancia a **`ConnectionFactory`** com configurações básicas (hostname, usuário, senha).
+- Cria a conexão de forma assíncrona, mas bloqueando via `.GetAwaiter().GetResult()` (porque construtores não podem ser `async`).
+- Cria o canal de comunicação (`_channel`).
+- Declara a fila **`checkoutqueue`**, garantindo que ela exista antes de começar o consumo.
+
+**Por que faz isso?**  
+Sem conexão e canal, o consumidor não consegue receber mensagens. Declarar a fila evita erros caso ela não exista.
+
+---
+
+### 2. `ExecuteAsync(CancellationToken stoppingToken)`
+
+**Função:**  
+Inicia o processo de escuta da fila e mantém o consumidor rodando.
+
+**O que faz:**
+
+- Lança exceção se o `stoppingToken` já estiver sinalizado (boa prática em BackgroundService).
+- Cria um **`AsyncEventingBasicConsumer`**, que é o consumidor assíncrono recomendado quando se quer usar `await` nas mensagens recebidas.
+- Assina o evento `ReceivedAsync` com um handler assíncrono.
+
+---
+
+### 3. `consumer.ReceivedAsync += async (ch, evt) => { ... }`
+
+**Função:**  
+Esse é o **callback** que será executado **toda vez que uma nova mensagem chegar na fila**.
+
+**O que faz no handler:**
+
+- Lê o corpo da mensagem:  
+  ```csharp
+  var content = Encoding.UTF8.GetString(evt.Body.ToArray());
+   ```
+
+- Desserializa o JSON para um objeto C#:
+  ```csharp
+    var checkoutHeaderDTO = JsonSerializer.Deserialize<CheckoutHeaderDTO>(content);
+  ```
+
+- Processa o pedido (chamando ProcessOrder):
+  ```csharp
+    await ProcessOrder(checkoutHeaderDTO);
+  ```
+- Faz o ACK manualmente (confirmando ao RabbitMQ que a mensagem foi processada com sucesso):
+  ```csharp
+    await _channel.BasicAckAsync(evt.DeliveryTag, false);
+  ```
+
+**Por que usar ACK manual?**
+Se der erro no processamento, a mensagem continua na fila e pode ser reprocessada depois.
+
+### 4. `_channel.BasicConsumeAsync(...)`
+
+**Função:**  
+Inicia o consumo da fila. O RabbitMQ passa a enviar mensagens para o consumidor.
+  ```csharp
+    await _channel.BasicConsumeAsync("checkoutqueue", false, consumer);
+  ```
+
+- O parâmetro **autoAck: false** → Exige que o consumidor dê manualmente o ACK depois de processar.
+
+### 5. `Task.Delay(Timeout.Infinite, stoppingToken)`
+
+**Função:**  
+Mantém o serviço rodando indefinidamente enquanto o stoppingToken não for cancelado (ou seja, enquanto a aplicação estiver viva).
+
+### 6. `ProcessOrder(CheckoutHeaderDTO checkoutHeaderDTO)`
+
+**Função:**  
+Transforma os dados recebidos do RabbitMQ (DTO de checkout) em uma entidade OrderHeader e salva no banco de dados via _orderRepository.AddOrder(order).
+(Os detalhes de persistência estão fora do RabbitMQ e são responsabilidade da camada de repositório.)
+
+## Resumo técnico em uma frase
+
+Essa classe é um **serviço em segundo plano no ASP.NET Core**, que **abre uma conexão e um canal com o RabbitMQ**, **escuta uma fila**, **processa as mensagens de forma assíncrona** e **só remove a mensagem da fila após garantir que ela foi salva com sucesso no banco de dados**.
+
+
