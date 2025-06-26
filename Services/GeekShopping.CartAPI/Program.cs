@@ -10,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Configuration.AddJsonFile("appsettings.Routes.json", optional: true, reloadOnChange: true);
+
 #region Configuração swagger
 builder.Services.AddSwaggerGen(c =>
 {
@@ -52,7 +55,7 @@ builder.Services.AddDbContext<MySqlContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 builder.Services.RegisterMaps();
-builder.Services.RegisterRepository();
+builder.Services.RegisterRepository(builder.Configuration);
 
 builder.Services.AddControllers();
 

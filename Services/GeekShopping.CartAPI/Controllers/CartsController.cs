@@ -14,12 +14,14 @@ namespace GeekShopping.CartAPI.Controllers
     public class CartsController : ControllerBase
     {
         private readonly ICartRepository _repository;
+        private readonly ICouponRepository _couponRepository;
         private readonly IRabbitMQMessageSender _rabbitMQMessageSender;
 
-        public CartsController(ICartRepository repository, IRabbitMQMessageSender rabbitMQMessageSender)
+        public CartsController(ICartRepository repository, IRabbitMQMessageSender rabbitMQMessageSender, ICouponRepository couponRepository)
         {
             _repository = repository;
             _rabbitMQMessageSender = rabbitMQMessageSender;
+            _couponRepository = couponRepository;
         }
 
 
@@ -87,22 +89,44 @@ namespace GeekShopping.CartAPI.Controllers
         [HttpPost("checkout")]
         public async Task<ActionResult> Checkout(CheckoutHeaderDTO checkoutHeaderDTO)
         {
-            if (checkoutHeaderDTO?.UserId == null)
-                return BadRequest();
-                
-            var cart = await _repository.FindCartByUserId(checkoutHeaderDTO.UserId);
+            try
+            {
 
-            if (cart == null)
-                return NotFound();
+                if (checkoutHeaderDTO?.UserId == null)
+                    return BadRequest();
 
-            checkoutHeaderDTO.CartDetails = cart.CartDetails;
-            checkoutHeaderDTO.DateTime = DateTime.Now;
+                var cart = await _repository.FindCartByUserId(checkoutHeaderDTO.UserId);
 
-            await _rabbitMQMessageSender.SendMessageAsync(checkoutHeaderDTO, "checkoutqueue");
+                if (cart == null)
+                    return NotFound();
 
-            System.Console.WriteLine("CHEGOU AQUI NO CHECKOUT DO CART CONTROLLER");
-            
-            return Ok(checkoutHeaderDTO);
+                await VerifyCoupon(checkoutHeaderDTO);
+
+                checkoutHeaderDTO.CartDetails = cart.CartDetails;
+                checkoutHeaderDTO.DateTime = DateTime.Now;
+
+                await _rabbitMQMessageSender.SendMessageAsync(checkoutHeaderDTO, "checkoutqueue");
+
+
+                return Ok(checkoutHeaderDTO);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(412);
+            }
+        }
+
+        private async Task VerifyCoupon(CheckoutHeaderDTO checkoutHeader)
+        {
+            if (!string.IsNullOrEmpty(checkoutHeader.CouponCode))
+            {
+                string token = Request.Headers.Authorization;
+
+                CouponDTO coupon = await _couponRepository.GetCouponByCouponCode(checkoutHeader.CouponCode, token);
+
+                if (checkoutHeader.DiscountAmount != coupon.DiscountAmount)
+                    throw new InvalidOperationException();
+            }
         }
     }
 }
