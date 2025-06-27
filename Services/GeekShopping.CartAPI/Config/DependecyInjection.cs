@@ -7,16 +7,16 @@ namespace GeekShopping.ProductAPI.Config
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection RegisterRepository(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection RegisterRepository(this IServiceCollection services)
         {
-            services.AddHttpClient<ICouponRepository, CouponRepository>(c =>
-                c.BaseAddress = new Uri(configuration["ServicesUrls:CouponAPI"])
-            );
+            System.Console.WriteLine("Rotas:" + RoutesConstants.CouponAPI);
 
             #region C
             services.AddScoped<ICartRepository, CartRepository>();
 
-            services.AddScoped<ICouponRepository, CouponRepository>();
+            services.AddHttpClient<ICouponRepository, CouponRepository>(c =>
+                c.BaseAddress = new Uri(RoutesConstants.CouponAPI)
+            );
             #endregion
           
             #region R

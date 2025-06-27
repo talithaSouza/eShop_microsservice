@@ -26,7 +26,12 @@ namespace GeekShopping.CartAPI.Repository
             if (response.StatusCode != HttpStatusCode.OK)
                 new CouponDTO();
 
-            return JsonSerializer.Deserialize<CouponDTO>(await response.Content.ReadAsStringAsync());
+            var str = response.Content.ReadAsStringAsync();
+
+            return JsonSerializer.Deserialize<CouponDTO>(await response.Content.ReadAsStringAsync(),  new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
         }
     }
 }

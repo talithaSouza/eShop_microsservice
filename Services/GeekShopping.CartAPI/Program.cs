@@ -55,7 +55,7 @@ builder.Services.AddDbContext<MySqlContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 builder.Services.RegisterMaps();
-builder.Services.RegisterRepository(builder.Configuration);
+builder.Services.RegisterRepository();
 
 builder.Services.AddControllers();
 
