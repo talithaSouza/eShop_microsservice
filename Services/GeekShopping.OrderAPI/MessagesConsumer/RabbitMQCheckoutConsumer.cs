@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using GeekShopping.OrderAPI.Messages;
 using GeekShopping.OrderAPI.Model;
+using GeekShopping.OrderAPI.RabbitMQSender;
 using GeekShopping.OrderAPI.Repository.Interface;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -110,8 +111,35 @@ namespace GeekShopping.OrderAPI.MessagesConsumer
                 var orderRepository = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
 
                 await orderRepository.AddOrder(order);
+
+                await PublishMessagePayment(scope, order);
             }
 
+        }
+
+        private async Task PublishMessagePayment(IServiceScope scope, OrderHeader order)
+        {
+            var rabbitMQMessageSender = scope.ServiceProvider.GetRequiredService<IRabbitMQMessageSender>();
+
+            var payment = new PaymentDTO()
+            {
+                Name = order.FirstName + " " + order.LastName,
+                CardNumber = order.CardNumber,
+                CVV = order.CVV,
+                ExpiryMonthYear = order.ExpiryMonthYear,
+                OrderId = order.Id,
+                PurchaseAmount = order.PurchaseAmount,
+                Email = order.Email
+            };
+
+            try
+            {
+                await rabbitMQMessageSender.SendMessageAsync(payment, "orderpaymentprocessqueue");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private async Task<bool> ConnectionExists()

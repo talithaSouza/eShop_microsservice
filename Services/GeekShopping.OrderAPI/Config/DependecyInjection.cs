@@ -1,9 +1,8 @@
 
 
 using GeekShopping.OrderAPI.MessagesConsumer;
-using GeekShopping.OrderAPI.Model.Context;
+using GeekShopping.OrderAPI.RabbitMQSender;
 using GeekShopping.OrderAPI.Repository.Interface;
-using Microsoft.EntityFrameworkCore;
 
 namespace GeekShopping.OrderAPI.Config
 {
@@ -17,7 +16,9 @@ namespace GeekShopping.OrderAPI.Config
           
             #region R
             services.AddHostedService<RabbitMQCheckoutConsumer>();
+            services.AddSingleton<IRabbitMQMessageSender, RabbitMQMessageSender>();
             #endregion
+             
 
             return services;
         }

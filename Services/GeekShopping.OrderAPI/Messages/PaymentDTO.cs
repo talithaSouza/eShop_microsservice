@@ -1,6 +1,8 @@
+using GeekShopping.MessageBus;
+
 namespace GeekShopping.OrderAPI.Messages
 {
-    public class PaymentDTO
+    public class PaymentDTO:BaseMessage
     {
       public long OrderId { get; set; }
         public string Name { get; set; }
