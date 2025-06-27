@@ -16,6 +16,7 @@ namespace GeekShopping.OrderAPI.Config
           
             #region R
             services.AddHostedService<RabbitMQCheckoutConsumer>();
+            services.AddHostedService<RabbitMQPaymentConsumer>();
             services.AddSingleton<IRabbitMQMessageSender, RabbitMQMessageSender>();
             #endregion
              
