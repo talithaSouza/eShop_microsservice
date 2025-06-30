@@ -107,7 +107,7 @@ namespace GeekShopping.CartAPI.Controllers
 
                 await _rabbitMQMessageSender.SendMessageAsync(checkoutHeaderDTO, "checkoutqueue");
 
-
+                await _repository.ClearCart(checkoutHeaderDTO.UserId);
                 return Ok(checkoutHeaderDTO);
             }
             catch (InvalidOperationException ex)
