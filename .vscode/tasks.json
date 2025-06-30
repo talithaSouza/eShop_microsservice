@@ -33,6 +33,18 @@
       "problemMatcher": []
     },
     {
+      "label": "run OrderAPI",
+      "command": "dotnet run --project ./Services/GeekShopping.OrderAPI/GeekShopping.OrderAPI.csproj",
+      "type": "shell",
+      "problemMatcher": []
+    },
+    {
+      "label": "run PaymentAPI",
+      "command": "dotnet run --project ./Services/GeekShopping.PaymentAPI/GeekShopping.PaymentAPI.csproj",
+      "type": "shell",
+      "problemMatcher": []
+    },
+    {
       "label": "Start Mult Projs", // <- Esse nome que aparecerá no menu Terminal
       "dependsOn": [
         "run FrontEnd",
@@ -40,6 +52,21 @@
         "run ProductAPI",
         "run CartAPI",
         "run CouponAPI"
+      ],
+      "dependsOrder": "parallel",
+      "type": "shell",
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Mult Projs+ ProjsRabbitMQ", // <- Esse nome que aparecerá no menu Terminal
+      "dependsOn": [
+        "run FrontEnd",
+        "run IdentityServer",
+        "run ProductAPI",
+        "run CartAPI",
+        "run CouponAPI",
+        "run OrderAPI",
+        "run PaymentAPI"
       ],
       "dependsOrder": "parallel",
       "type": "shell",
