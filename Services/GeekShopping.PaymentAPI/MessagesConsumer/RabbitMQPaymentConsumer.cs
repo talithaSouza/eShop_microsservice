@@ -74,8 +74,6 @@ namespace GeekShopping.PaymentAPI.MessagesConsumer
 
             await base.StopAsync(cancellationToken);
         }
-
-//Erro ao processar a mensagem: Unable to cast object of type 'GeekShopping.PaymentAPI.Messages.UpdatePaymentResultMessage' to type 'GeekShopping.PaymentAPI.Messages.PaymentMessage'.
         private async Task ProcessPayment(PaymentMessage paymentMessage)
         {
             var result = _processPayment.PaymentProcessor();
@@ -86,18 +84,15 @@ namespace GeekShopping.PaymentAPI.MessagesConsumer
                 OrderId = paymentMessage.OrderId,
                 Email = paymentMessage.Email
             };
-            // using (var scope = _serviceProvider.CreateScope())
-            // {
-            //     //  var rabbitMQMessageSender = scope.ServiceProvider.GetRequiredService<IRabbitMQMessageSender>();
+
             try
             {
-                await _rabbitMQMessageSender.SendMessageAsync(paymentResult, "orderpaymentresultqueue");
+                await _rabbitMQMessageSender.SendMessageAsync(paymentResult);
             }
             catch (Exception)
             {
                 throw;
             }
-            // }
 
         }
 
