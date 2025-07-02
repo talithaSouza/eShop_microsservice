@@ -45,6 +45,12 @@
       "problemMatcher": []
     },
     {
+      "label": "run Email",
+      "command": "dotnet run --project ./Services/GeekShopping.Email/GeekShopping.Email.csproj",
+      "type": "shell",
+      "problemMatcher": []
+    },
+    {
       "label": "Start Mult Projs", // <- Esse nome que aparecerá no menu Terminal
       "dependsOn": [
         "run FrontEnd",
@@ -66,7 +72,8 @@
         "run CartAPI",
         "run CouponAPI",
         "run OrderAPI",
-        "run PaymentAPI"
+        "run PaymentAPI",
+        "run Email"
       ],
       "dependsOrder": "parallel",
       "type": "shell",
