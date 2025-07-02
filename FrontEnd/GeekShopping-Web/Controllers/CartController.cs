@@ -50,7 +50,7 @@ namespace GeekShopping_Web.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Checkout(CartViewModel model)
-        {
+        {   
             var token = await HttpContext.GetTokenAsync("access_token");
 
             var response = await _cartService.Checkout(model.CartHeader, token);
