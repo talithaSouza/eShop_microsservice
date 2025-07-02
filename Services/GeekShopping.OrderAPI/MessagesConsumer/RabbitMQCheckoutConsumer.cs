@@ -108,11 +108,11 @@ namespace GeekShopping.OrderAPI.MessagesConsumer
 
             using (var scope = _serviceProvider.CreateScope())
             {
-                var orderRepository = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
+                    var orderRepository = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
 
-                await orderRepository.AddOrder(order);
+                    await orderRepository.AddOrder(order);
 
-                await PublishMessagePayment(scope, order);
+                    await PublishMessagePayment(scope, order);
             }
 
         }
