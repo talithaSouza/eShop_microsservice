@@ -14,9 +14,10 @@ namespace GeekShopping.OrderAPI.MessagesConsumer
         private readonly IServiceProvider _serviceProvider;
         private IConnection _connection;
         private IChannel _channel;
-        private const string _exchangeName = "FanoutPaymentUpdateExchange";
-        //Essa propriedade pode ter um nome declarado pelo proprio dev, foi usado um nome randomico apenas para exemplo
-        private string _queueName = "";
+        private const string _exchangeName = "DirectPaymentUpdateExchange";
+
+        private const string _paymentOrderUpdateQueueName = "PaymentOrderUpdateQueueName";
+
 
         public RabbitMQPaymentConsumer(IServiceProvider serviceProvider)
         {
@@ -51,7 +52,7 @@ namespace GeekShopping.OrderAPI.MessagesConsumer
 
                 };
 
-                await _channel.BasicConsumeAsync(_queueName, false, consumer);
+                await _channel.BasicConsumeAsync(_paymentOrderUpdateQueueName, false, consumer);
 
                 await Task.Delay(Timeout.Infinite, stoppingToken);
             }
@@ -115,14 +116,16 @@ namespace GeekShopping.OrderAPI.MessagesConsumer
 
             _channel = await _connection.CreateChannelAsync();
 
-            await _channel.ExchangeDeclareAsync(_exchangeName, ExchangeType.Fanout);
+             await _channel.ExchangeDeclareAsync(_exchangeName, ExchangeType.Direct);
 
-            _queueName = (await _channel.QueueDeclareAsync()).QueueName;
             //a fila poderia ter sido declarada da maneira abaixo, inclusive é melhor indicado
             // await _channel.QueueDeclareAsync(queue: "orderpaymentresultqueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
+            await _channel.QueueDeclareAsync(queue: _paymentOrderUpdateQueueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
             //Para o tipo fanout não é necessário o routingKey pois ele é ignorado
-            await _channel.QueueBindAsync(_queueName, _exchangeName, routingKey: "");
+            // await _channel.QueueBindAsync(_queueName, _exchangeName, routingKey: "");
+
+            await _channel.QueueBindAsync(_paymentOrderUpdateQueueName, _exchangeName, routingKey: "Payment");
         }
 
     }

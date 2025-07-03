@@ -1,11 +1,10 @@
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using GeekShopping.MessageBus;
 using GeekShopping.PaymentAPI.Messages;
 using RabbitMQ.Client;
 
-namespace GeekShopping.PaymentProcessor.RabbitMQSender
+namespace GeekShopping.PaymentAPI.RabbitMQSender
 {
     public class RabbitMQMessageSender : IRabbitMQMessageSender
     {
@@ -13,8 +12,10 @@ namespace GeekShopping.PaymentProcessor.RabbitMQSender
         private readonly string _password;
         private readonly string _userName;
         private IConnection _connection;
-
-        private const string _exchangeName = "FanoutPaymentUpdateExchange";
+        // private const string _exchangeName = "FanoutPaymentUpdateExchange";
+        private const string _exchangeName = "DirectPaymentUpdateExchange";
+        private const string _paymenEmailtUpdateQueueName = "PaymentEmailUpdateQueueName";
+        private const string _paymentOrderUpdateQueueName = "PaymentOrderUpdateQueueName";
 
         public RabbitMQMessageSender()
         {
@@ -28,11 +29,22 @@ namespace GeekShopping.PaymentProcessor.RabbitMQSender
             {
                 using var channel = await _connection.CreateChannelAsync();
 
-                await channel.ExchangeDeclareAsync(_exchangeName, ExchangeType.Fanout, durable: false);
+                //   await channel.ExchangeDeclareAsync(_exchangeName, ExchangeType.Fanout, durable: false);
+
+                await channel.ExchangeDeclareAsync(_exchangeName, ExchangeType.Direct, durable: false);
+
+                await channel.QueueDeclareAsync(_paymenEmailtUpdateQueueName, durable: false, exclusive: false, autoDelete: false);
+
+                await channel.QueueDeclareAsync(_paymentOrderUpdateQueueName, durable: false, exclusive: false, autoDelete: false);
+
+                await channel.QueueBindAsync(_paymenEmailtUpdateQueueName, _exchangeName, "Payment");
+                await channel.QueueBindAsync(_paymentOrderUpdateQueueName, _exchangeName, "Payment");
 
                 byte[] body = GetMessageAsByteArray(baseMessage);
 
-                await channel.BasicPublishAsync(exchange: _exchangeName, routingKey: "", body: body);
+                await channel.BasicPublishAsync(exchange: _exchangeName, routingKey: "Payment", body: body);
+
+                // para o tipo fanout: await channel.BasicPublishAsync(exchange: _exchangeName, routingKey: "Payment", body: body);
             }
         }
 

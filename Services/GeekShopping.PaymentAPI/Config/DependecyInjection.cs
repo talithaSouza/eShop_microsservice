@@ -1,7 +1,7 @@
 
 
 using GeekShopping.PaymentAPI.MessagesConsumer;
-using GeekShopping.PaymentProcessor.RabbitMQSender;
+using GeekShopping.PaymentAPI.RabbitMQSender;
 
 namespace GeekShopping.PaymentProcessor.Config
 {

@@ -1,8 +1,8 @@
 using System.Text;
 using System.Text.Json;
 using GeekShopping.PaymentAPI.Messages;
+using GeekShopping.PaymentAPI.RabbitMQSender;
 using GeekShopping.PaymentProcessor;
-using GeekShopping.PaymentProcessor.RabbitMQSender;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
