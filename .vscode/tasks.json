@@ -51,13 +51,20 @@
       "problemMatcher": []
     },
     {
+      "label": "run APIGateway",
+      "command": "dotnet run --project ./Gateway/GeekShopping.APIGateway/GeekShopping.APIGateway.csproj",
+      "type": "shell",
+      "problemMatcher": []
+    },
+    {
       "label": "Start Mult Projs", // <- Esse nome que aparecerá no menu Terminal
       "dependsOn": [
         "run FrontEnd",
         "run IdentityServer",
         "run ProductAPI",
         "run CartAPI",
-        "run CouponAPI"
+        "run CouponAPI",
+        "run APIGateway"
       ],
       "dependsOrder": "parallel",
       "type": "shell",
@@ -73,7 +80,8 @@
         "run CouponAPI",
         "run OrderAPI",
         "run PaymentAPI",
-        "run Email"
+        "run Email", 
+        "run APIGateway"
       ],
       "dependsOrder": "parallel",
       "type": "shell",

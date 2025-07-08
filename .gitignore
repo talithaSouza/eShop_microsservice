@@ -5,6 +5,7 @@
 
 *.env
 *appsettings.json
+!Gateway/GeekShopping.APIGateway/appsettings.json
 
 # User-specific files
 *.rsuser
